@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Email details
     $to = "contactus@connectware.in"; // Replace with your email address
-    $subject = "New Message from Contact Form";
+    $subject = "Website Contact Form";
     $body = "Name: $name\nCompany: $company\nEmail: $email\nPhone: $phone\nService: $service\nMessage:\n$message";
     $headers = "From: $name <$email>\r\n";
 
