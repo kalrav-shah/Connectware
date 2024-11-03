@@ -1,45 +1,32 @@
 <?php
-  /**
-  * Requires the "PHP Email Form" library
-  * The "PHP Email Form" library is available only in the pro version of the template
-  * The library should be uploaded to: vendor/php-email-form/php-email-form.php
-  * For more info and help: https://bootstrapmade.com/php-email-form/
-  */
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Collect and sanitize form data
+    $name = htmlspecialchars(trim($_POST['name']));
+    $company = htmlspecialchars(trim($_POST['company']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
+    $service = htmlspecialchars(trim($_POST['Service']));
+    $message = htmlspecialchars(trim($_POST['message']));
 
-  // Replace contact@example.com with your real receiving email address
-  $receiving_email_address = 'contact@connectware.in';
+    // Validate email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid email format";
+        exit;
+    }
 
-  if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
-    include( $php_email_form );
-  } else {
-    die( 'Unable to load the "PHP Email Form" Library!');
-  }
+    // Email details
+    $to = "contactus@connectware.in"; // Replace with your email address
+    $subject = "New Message from Contact Form";
+    $body = "Name: $name\nCompany: $company\nEmail: $email\nPhone: $phone\nService: $service\nMessage:\n$message";
+    $headers = "From: $name <$email>\r\n";
 
-  $contact = new PHP_Email_Form;
-  $contact->ajax = true;
-  
-  $contact->to = $receiving_email_address;
-  $contact->from_name = $_POST['name'];
-  $contact->from_company = $_POST['company'];
-  $contact->from_email = $_POST['email'];
-  $contact->from_phone = $_POST['phone'];
-  $contact->from_service = $_POST['service'];
-  $contact->from_message = $_POST['message'];
-  $contact->subject = $_POST['subject'];
-
-  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-  /*
-  $contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-  );
-  */
-
-  $contact->add_message( $_POST['name'], 'From');
-  $contact->add_message( $_POST['email'], 'Email');
-  $contact->add_message( $_POST['message'], 'Message', 10);
-
-  echo $contact->send();
+    // Send email
+    if (mail($to, $subject, $body, $headers)) {
+        echo "Your message has been sent. Thank you!";
+    } else {
+        echo "Failed to send email.";
+    }
+} else {
+    echo "Invalid request method.";
+}
 ?>
